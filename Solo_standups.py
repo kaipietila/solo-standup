@@ -69,25 +69,17 @@ class DailyEntry:
         diary_file.write(self.entry)
         diary_file.write("\n\n")
         diary_file.close()
-        print("ok, good luck!")
+        print("#######################")
 
 def print_entries():
     '''
     Func to print the entries written to the file. Basically just reading from the file the entries
     if the user does not wish to read the entries the program exits
     '''
-    show_entries = "Do you want to read your previous entries? y/n\n"
-    for character in show_entries:
-        sys.stdout.write(character)
-        sys.stdout.flush()
-        time.sleep(0.03)
-    answer = input("> ")
-    if answer.lower() == "y":
-        for entry in open(app_root + "\diary_entries.txt"):
-            print(entry)
-        
-    else: 
-        exit()
+    for entry in open(app_root + "\diary_entries.txt"):
+        print(entry)
+    input("Enter any key to move on and enter:")
+    title_screen()
 
 def run_diary():
     '''
@@ -96,7 +88,37 @@ def run_diary():
     todays_entry = DailyEntry(today_day,today_month,today_year,today_hour, today_minute)
     todays_entry.prompt_for_entry()
     todays_entry.save_to_file()
-    print_entries()
+    title_screen()
+
+def title_screen_selection():
+    '''
+    to select options to enter an entry or quit etc.
+    '''
+    while True:
+        option = input("> ")
+        if option.lower() == "w":
+            run_diary()
+        elif option.lower() == "p":
+            print_entries()
+        elif option.lower() == "q":
+            sys.exit()
+        else:
+            print("Do not understand! Try again")
+            continue
+
+def title_screen():
+    '''
+    Prints the title screen and prompts the player for a choice
+    '''
+    print ("\n" * 100) #to clear the screen
+    print("#########################")
+    print("   So what's next?  ")
+    print("#########################")
+    print("To Write another entry enter 'w'")
+    print("To Print entries enter 'p'")
+    print("To Quit enter 'q'")
+    title_screen_selection()
+    
 
 
 if __name__ == "__main__":
