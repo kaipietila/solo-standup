@@ -30,7 +30,7 @@ today_minute = todays_date.minute
 """
 Setting up the date and time for the timestamp
 """
-app_root = os.path.dirname(os.path.realpath(__file__)) 
+app_root = os.path.dirname(os.path.realpath(__file__))
 """
 getting the path of the file to be able to create the .txt file in the right place
 """
@@ -95,7 +95,7 @@ def write_to_db():
 
 def run_diary():
     """
-    Main func to run the program
+    Main func to run the program always runs on startup
     """
     todays_entry = DailyEntry(today_day,today_month,today_year,today_hour, today_minute)
     todays_entry.prompt_for_entry()
@@ -134,7 +134,7 @@ def title_screen():
     title_screen_selection()
     
 
-if __name__ == "  main  ":
+if __name__ == "__main__":
     """
     To run the program if main
     """
