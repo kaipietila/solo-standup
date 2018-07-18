@@ -5,31 +5,29 @@ by Kai Pietilä
 A program to record some plans on what to code the this session. 
 You can review your entries later via the program
 
-Name comes from when you at a comapny perform standups with your squad to see
+Name comes from when you at a company perform stand ups with your squad to see
 what needs to be done etc each morning. 
 Created this to have some nice log to follow my own coding and to keep some record for
 myself.
 
-Still needed features for full intended funtionality: 
-- Add TinyDB to be able to use the entries for more stuff, search etc. To be able 
-  to show an amount of entries on command.
+Still needed features for full intended functionality:
+- Add TinyDB query functionality and prettier printing
 """
 
 import datetime
 import sys
 import time
-import os
 from tinydb import TinyDB, Query
 
 """
 Setting up the date and time for the timestamp
 """
-todays_date = datetime.datetime.today()
-today_day = todays_date.day
-today_month = todays_date.month
-today_year = todays_date.year
-today_hour = todays_date.hour
-today_minute = todays_date.minute
+TODAYS_DATE = datetime.datetime.today()
+TODAY_DAY = TODAYS_DATE.day
+TODAY_MONTH = TODAYS_DATE.month
+TODAY_YEAR = TODAYS_DATE.year
+TODAY_HOUR = TODAYS_DATE.hour
+TODAY_MINUTE = TODAYS_DATE.minute
 """
 Creating the TinyDB for later use
 """
@@ -51,7 +49,7 @@ class DailyEntry:
     
     def prompt_for_entry(self):
         """
-        func to ask the user for input. The astring is setup to be
+        func to ask the user for input. The string is setup to be
         displayed in a nice flushing motion
         """
         print(f"Date: {self.day}.{self.month}.{self.year}  Time: {self.hour}.{self.minute}")
@@ -86,11 +84,36 @@ def run_diary():
     """
     Main func to run the program always runs on startup
     """
-    todays_entry = DailyEntry(today_day, today_month, today_year, today_hour, today_minute)
+    todays_entry = DailyEntry(TODAY_DAY, TODAY_MONTH, TODAY_YEAR, TODAY_HOUR, TODAY_MINUTE)
     todays_entry.prompt_for_entry()
-    dbdate = todays_date.strftime('%d %b %Y %H:%M')
-    entry_db.insert({'date': dbdate, 'entry': todays_entry.entry})
+    db_date = TODAYS_DATE.strftime('%d %b %Y %H:%M')
+    entry_db.insert({'date': db_date, 'entry': todays_entry.entry})
     title_screen()
+
+
+def advanced_options():
+    print("\n" * 100)  # to clear the screen
+    print(" "*30+"So what advanced thing are you doing?  ")
+    print(" "*30+"BEWARE THESE THINGS CANT DE UNDONE!")
+    print(" "*30+"To erase all entries enter 'erase'")
+    print(" "*30+"To get back to title screen enter 'quit'")
+    print("\n" * 10)
+    advanced_options_selections()
+
+
+def advanced_options_selections():
+    while True:
+        option_2 = input("> ")
+        if option_2.lower() == "erase":
+            entry_db.purge()
+            print("You erased them all. Now go make new ones!")
+            time.sleep(2)
+            title_screen()
+        elif option_2.lower() == "quit":
+            title_screen()
+        else:
+            print("Do not understand! Try again")
+            continue
 
 
 def title_screen_selection():
@@ -105,6 +128,8 @@ def title_screen_selection():
             print_entries(entry_db)
         elif option.lower() == "q":
             sys.exit()
+        elif option.lower() == 'a':
+            advanced_options()
         else:
             print("Do not understand! Try again")
             continue
@@ -114,13 +139,14 @@ def title_screen():
     """
     Prints the title screen and prompts the player for a choice
     """
-    print("\n" * 100)  # to clear the screen
-    print("#########################")
-    print("   So what's next?  ")
-    print("#########################")
-    print("To Write another entry enter 'w'")
-    print("To Print entries enter 'p'")
-    print("To Quit enter 'q'")
+    print("\n" * 100)       # to clear the screen
+    print(" "*30+"   So what's next?  ")
+    print(" "*100)
+    print(" "*30+"To Write another entry enter 'w'")
+    print(" "*30+"To Print entries enter 'p'")
+    print(" "*30+"To Enter advanced options enter 'a'")
+    print(" "*30+"To Quit enter 'q'")
+    print("\n"*10)
     title_screen_selection()
     
 

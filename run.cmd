@@ -1,1 +1,1 @@
-python C:\Users\Kai\Documents\solo-standup\Solo_standups.py
+python C:\Users\Kai\Documents\solo-standup\standups.py
