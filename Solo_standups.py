@@ -19,8 +19,11 @@ import datetime
 import sys
 import time
 import os
-import tinydb
+from tinydb import TinyDB, Query
 
+"""
+Setting up the date and time for the timestamp
+"""
 todays_date = datetime.datetime.today()
 today_day = todays_date.day
 today_month = todays_date.month
@@ -28,13 +31,9 @@ today_year = todays_date.year
 today_hour = todays_date.hour
 today_minute = todays_date.minute
 """
-Setting up the date and time for the timestamp
+Creating the TinyDB for later use
 """
-app_root = os.path.dirname(os.path.realpath(__file__))
-"""
-getting the path of the file to be able to create the .txt file in the right place
-"""
-
+entry_db = TinyDB('entry_db.json')
 
 class DailyEntry:
     """
@@ -62,35 +61,24 @@ class DailyEntry:
             time.sleep(0.03)
         self.entry = input("> ")
 
-    def save_to_file(self):
-        """
-        Func to save the entry to the file and write the timestamp as string
-        """
-        strdate = todays_date.strftime('%d %b %Y %H:%M\n')  # formats the date as a string
-        diary_file = open(app_root + "\diary_entries.txt", "a")
-        diary_file.write(strdate)
-        diary_file.write(self.entry)
-        diary_file.write("\n\n")
-        diary_file.close()
-        print("#######################")
 
-
-def print_entries():
+def print_entries(db):
     """
-    Func to print the entries written to the file. Basically just reading from the file the entries
+    Func to print the entries written to the database. Basically just reading from the database the entries
     if the user does not wish to read the entries the program exits
     """
-    for entry in open(app_root + "\diary_entries.txt"):
+    for entry in db:
         print(entry)
     input("Enter any key to move on and enter:")
     title_screen()
 
 
-def write_to_db():
+def print_db(db):
     """
-    A func to write into tiny db
+    To print the db to the user.
     """
-    pass
+    for entry in db:
+        print(entry)
 
 
 def run_diary():
@@ -99,7 +87,8 @@ def run_diary():
     """
     todays_entry = DailyEntry(today_day,today_month,today_year,today_hour, today_minute)
     todays_entry.prompt_for_entry()
-    todays_entry.save_to_file()
+    dbdate = todays_date.strftime('%d %b %Y %H:%M')
+    entry_db.insert({'date': dbdate, 'entry': todays_entry.entry})
     title_screen()
 
 
@@ -112,7 +101,7 @@ def title_screen_selection():
         if option.lower() == "w":
             run_diary()
         elif option.lower() == "p":
-            print_entries()
+            print_entries(entry_db)
         elif option.lower() == "q":
             sys.exit()
         else:
