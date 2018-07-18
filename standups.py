@@ -1,5 +1,5 @@
 """
-***SOLO STANDUP*** 
+***SOLO STANDUPS***
 by Kai Pietilä
 
 A program to record some plans on what to code the this session. 
@@ -51,7 +51,8 @@ class DailyEntry:
     
     def prompt_for_entry(self):
         """
-        func to ask the user for input. The astring is setup to be displayed in a nice flushing motion
+        func to ask the user for input. The astring is setup to be
+        displayed in a nice flushing motion
         """
         print(f"Date: {self.day}.{self.month}.{self.year}  Time: {self.hour}.{self.minute}")
         prompt_user = "What are you going to code this session? \n"
@@ -69,7 +70,7 @@ def print_entries(db):
     """
     for entry in db:
         print(entry)
-    input("Enter any key to move on and enter:")
+    input("Enter any key and enter to get to title screen")
     title_screen()
 
 
@@ -85,7 +86,7 @@ def run_diary():
     """
     Main func to run the program always runs on startup
     """
-    todays_entry = DailyEntry(today_day,today_month,today_year,today_hour, today_minute)
+    todays_entry = DailyEntry(today_day, today_month, today_year, today_hour, today_minute)
     todays_entry.prompt_for_entry()
     dbdate = todays_date.strftime('%d %b %Y %H:%M')
     entry_db.insert({'date': dbdate, 'entry': todays_entry.entry})
@@ -113,7 +114,7 @@ def title_screen():
     """
     Prints the title screen and prompts the player for a choice
     """
-    print ("\n" * 100)  # to clear the screen
+    print("\n" * 100)  # to clear the screen
     print("#########################")
     print("   So what's next?  ")
     print("#########################")
