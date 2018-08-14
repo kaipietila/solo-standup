@@ -81,20 +81,59 @@ def print_db(db):
         print(entry)
 
 
+def query_entry_amount():
+    """
+    shows the amount of entries in the whole db
+    :return:
+    returns a number or entries
+    """
+    entry = len(entry_db)
+    print(f"There are {entry} entries in the db")
+
+
+def get_latest_entry():
+    """
+    To show the latest entries, as many as the user requests
+    :return:
+    returns the latest x amount of entries
+    """
+    db_len = len(entry_db)
+    show_amount = int(input("How many of the latest entries do want to show?\n"))
+    x = 0
+    if show_amount == 1:
+        print(entry_db.get(doc_id = db_len))
+    elif show_amount > 1:
+        while (db_len - show_amount) != db_len:
+            doc_pos = db_len - show_amount
+            print(entry_db.get(doc_id=doc_pos))
+            show_amount -= 1
+        else:
+            print(entry_db.get(doc_id=db_len))
+
+
 def query_keyword():
     """
     search the db with a keyword
     """
-    pass
+    k_word = Query()
+    search_input = input("What keyword in an entry do you want to search?\n")
+    results = entry_db.search(k_word.entry.search(search_input))
+    for result in results:
+        print(result)
+
 
 
 def query_history():
     """
-    to search a seleceted amount of entries
+    to search a selected amount of entries for a specific date
     :return:
-    prints out a selected amount of entires to the user
+    prints out a selected amount of entries to the user
     """
-    pass
+    history = Query()
+    search_input = input("What date do you want to search? e.g. '14 Aug' \n")
+    results = entry_db.search(history.date.search(search_input))
+    for result in results:
+        print(result)
 
 
 def run_diary():
@@ -145,7 +184,9 @@ def query_options():
     print(" "*30+"To search by keyword enter 'k'")
     print(" "*30+"To search the history of entries enter 'h'")
     print(" "*30+"To see all entries in the current history enter 'p'")
-    print(" " * 30 + "To quit enter 'k'")
+    print(" "*30+"To show the amount of entries in the db enter 'a'")
+    print(" "*30 + "To get latest entries enter 'l'")
+    print(" " * 30 + "To quit enter 'q'")
     print("\n" * 10)
     query_options_selections()
 
@@ -162,6 +203,10 @@ def query_options_selections():
             query_history()
         elif option.lower() == "p":
             print_entries(entry_db)
+        elif option.lower() == "a":
+            query_entry_amount()
+        elif option.lower() == "l":
+            get_latest_entry()
         elif option.lower() == "q":
             title_screen()
         else:
