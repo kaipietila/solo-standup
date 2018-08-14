@@ -80,6 +80,23 @@ def print_db(db):
         print(entry)
 
 
+def query_keyword():
+    """
+    search the db with a keyword
+    """
+    pass
+
+
+def query_history():
+    """
+    to search a seleceted amount of entries
+    :return:
+    prints out a selected amount of entires to the user
+    """
+    pass
+
+
+
 def run_diary():
     """
     Main func to run the program always runs on startup
@@ -102,6 +119,9 @@ def advanced_options():
 
 
 def advanced_options_selections():
+    """
+    defining input for advanced options menu
+    """
     while True:
         option_2 = input("> ")
         if option_2.lower() == "erase":
@@ -110,6 +130,38 @@ def advanced_options_selections():
             time.sleep(2)
             title_screen()
         elif option_2.lower() == "quit":
+            title_screen()
+        else:
+            print("Do not understand! Try again")
+            continue
+
+
+def query_options():
+    """
+    query options menu
+    """
+    print("\n" * 100)  # to clear the screen
+    print(" "*30+"####QUERY OPTIONS####  ")
+    print(" "*30+"To search by keyword enter 'k'")
+    print(" "*30+"To search the history of entries enter 'h'")
+    print(" "*30+"To see all entries in the current history enter 'p'")
+    print(" " * 30 + "To quit enter 'k'")
+    print("\n" * 10)
+    query_options_selections()
+
+def query_options_selections():
+    """
+    To execute the options given in the query options menu
+    """
+    while True:
+        option = input("> ")
+        if option.lower() == "k":
+            query_keyword()
+        elif option.lower() == "h":
+            query_history()
+        elif option.lower() == "p":
+            print_entries(entry_db)
+        elif option.lower() == "q":
             title_screen()
         else:
             print("Do not understand! Try again")
@@ -130,6 +182,8 @@ def title_screen_selection():
             sys.exit()
         elif option.lower() == 'a':
             advanced_options()
+        elif option.lower() == "s":
+            query_options()
         else:
             print("Do not understand! Try again")
             continue
@@ -144,6 +198,7 @@ def title_screen():
     print(" "*100)
     print(" "*30+"To Write another entry enter 'w'")
     print(" "*30+"To Print entries enter 'p'")
+    print(" "*30+"To Enter search mode enter 's'")
     print(" "*30+"To Enter advanced options enter 'a'")
     print(" "*30+"To Quit enter 'q'")
     print("\n"*10)
