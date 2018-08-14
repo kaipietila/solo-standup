@@ -33,6 +33,7 @@ Creating the TinyDB for later use
 """
 entry_db = TinyDB('entry_db.json')
 
+
 class DailyEntry:
     """
     Class for creating the User Entry
@@ -96,7 +97,6 @@ def query_history():
     pass
 
 
-
 def run_diary():
     """
     Main func to run the program always runs on startup
@@ -148,6 +148,7 @@ def query_options():
     print(" " * 30 + "To quit enter 'k'")
     print("\n" * 10)
     query_options_selections()
+
 
 def query_options_selections():
     """
