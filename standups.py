@@ -47,7 +47,8 @@ class DailyEntry:
         self.entry = ''
         self.hour = hour
         self.minute = minute
-    
+
+
     def prompt_for_entry(self):
         """
         func to ask the user for input. The string is setup to be
@@ -115,7 +116,7 @@ def query_keyword():
     """
     search the db with a keyword
     """
-    k_word = Query()
+    k_word = Qteeuery()
     search_input = input("What keyword in an entry do you want to search?\n")
     results = entry_db.search(k_word.entry.search(search_input))
     for result in results:
