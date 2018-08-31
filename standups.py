@@ -81,6 +81,9 @@ def print_db(db):
     for entry in db:
         print(entry)
 
+def return_db(db):
+    for entry in db:
+        return(entry)
 
 def query_entry_amount():
     """
@@ -116,7 +119,7 @@ def query_keyword():
     """
     search the db with a keyword
     """
-    k_word = Qteeuery()
+    k_word = Query()
     search_input = input("What keyword in an entry do you want to search?\n")
     results = entry_db.search(k_word.entry.search(search_input))
     for result in results:

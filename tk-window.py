@@ -1,9 +1,10 @@
 from tkinter import *
+import tkinter.scrolledtext as tkst
 import webbrowser
 from standups import *
 import datetime
-import time
 from tinydb import TinyDB, Query
+from PIL import Image, ImageTk
 
 entry_db = TinyDB('entry_db.json')
 """
@@ -12,24 +13,28 @@ Creating a simple window to add out stand-up app to at some point
 github_link = "https://github.com/kaipietila/solo-standup"
 
 LABEL_FONT= ("Verdana", 10)
+ENTRY_FONT= ("Verdana", 8)
 
+LOGO_IMAGE = "logo.png"
 
 class Window(Frame):
 
     def __init__(self, master = None):
-        Frame.__init__(self, master)
+        Frame.__init__(self, master, height= 300, background="white")
         self.master = master
         self.init_window()
 
     def init_window(self):
         """
-        The Start window, probably the only window in this app
+        The initial window, probably the only window in this app as everything can be and should
+        be made simple in one frame
         """
         self.master.title("Standup!")
         self.pack(fill=BOTH, expand=1)
+        self.master.config(background="white")
 
         quitButton = Button(self, text="I'm Done!", command= self.client_exit)
-        quitButton.place(x=300, y=10)
+        quitButton.place(x=400, y=10)
 
         menu = Menu(self.master)
         self.master.config(menu=menu)
@@ -47,15 +52,53 @@ class Window(Frame):
         help.add_command(label="Github Link", command=self.open_github)
         menu.add_cascade(label="Help", menu=help)
 
-        inputText = Text(self.master, height=3, width= 40)
+        inputText = Text(self.master, height=3, width=68, font=ENTRY_FONT)
         inputText.place(x=10, y=70)
 
         entryButton = Button(self, text="Save Entry", command=lambda: [self.create_entry(inputText.get(1.0, 'end -1c')),
                                                                        self.notify("Saved!")])
         entryButton.place(x=10, y=130)
 
-        labelInputText = Label(self.master, text="What are you going to code today?", font=LABEL_FONT)
+        logo_image = Image.open("logo.png")
+        logo_photo = ImageTk.PhotoImage(logo_image)
+        imgLabel = Label(image=logo_photo, borderwidth=0)
+        imgLabel.image = logo_photo
+        imgLabel.place(x=155, y=130)
+
+        labelInputText = Label(self.master, text="What are you going to code today?", font=LABEL_FONT, bg="white")
         labelInputText.place(x=10, y=40)
+
+        queryButton = Button(self.master, text="Update", command=lambda :self.updateQuery(entryTextBox))
+        queryButton.pack()
+
+        searchWord = Entry(self.master)
+        searchWord.pack()
+        searchWordWord = searchWord.get()
+        searchButton = Button(self.master, text="Search", command= lambda : self.searchKeyWord(searchWordWord,
+                                                                                               entryTextBox))
+        searchButton.pack()
+
+        entryTextBox = tkst.ScrolledText(self.master, height=20, width=47, font=ENTRY_FONT)
+        entryTextBox.pack(padx=10, pady=10, fill=BOTH, expand=True)
+
+
+    def updateQuery(self, obj):
+        obj.delete('1.0', END)
+        allEntries=entry_db.all()
+        for entry in allEntries:
+            obj.insert(INSERT, entry)
+            obj.insert(INSERT, "\n")
+
+    def searchKeyWord(self, word, obj):
+        """
+        does not work yet!!
+        :param word:
+        :param obj:
+        :return:
+        """
+        resultIndex= obj.search(word, 1.0)
+        print(resultIndex)
+
 
     def create_entry(self, input_content):
         """
@@ -115,7 +158,7 @@ if __name__ == "__main__":
     """
     root = Tk()
 
-    root.geometry("400x300")
+    root.geometry("500x700")
     root.iconbitmap("favicon.ico")
     app = Window(root)
 
