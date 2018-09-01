@@ -5,16 +5,14 @@ from standups import *
 import datetime
 from tinydb import TinyDB, Query
 from PIL import Image, ImageTk
-
-entry_db = TinyDB('entry_db.json')
+import re
 """
-Creating a simple window to add out stand-up app to at some point
+A GUI for the standup app.
 """
 github_link = "https://github.com/kaipietila/solo-standup"
-
+entry_db = TinyDB('entry_db.json')
 LABEL_FONT= ("Verdana", 10)
 ENTRY_FONT= ("Verdana", 8)
-
 LOGO_IMAGE = "logo.png"
 
 class Window(Frame):
@@ -68,28 +66,54 @@ class Window(Frame):
         labelInputText = Label(self.master, text="What are you going to code today?", font=LABEL_FONT, bg="white")
         labelInputText.place(x=10, y=40)
 
-        queryButton = Button(self.master, text="Update", command=lambda :self.updateQuery(entryTextBox))
+        queryButton = Button(self.master, text="Update", command=lambda :self.update_query(entryTextBox))
         queryButton.pack()
 
         searchWord = Entry(self.master)
         searchWord.pack()
-        searchWordWord = searchWord.get()
-        searchButton = Button(self.master, text="Search", command= lambda : self.searchKeyWord(searchWordWord,
+
+        searchButton = Button(self.master, text="Search text", command= lambda : self.search_key_word(searchWord.get(),
                                                                                                entryTextBox))
         searchButton.pack()
+        searchDateButton = Button(self.master, text="Search date", command= lambda :self.search_date(searchWord.get(),
+                                                                                                      entryTextBox))
+        searchDateButton.pack()
+
+        searchLatestButton = Button(self.master, text="Search latest", command=lambda: self.get_latest_entries(searchWord.get(),
+                                                                                                    entryTextBox))
+        searchLatestButton.pack()
 
         entryTextBox = tkst.ScrolledText(self.master, height=20, width=47, font=ENTRY_FONT)
         entryTextBox.pack(padx=10, pady=10, fill=BOTH, expand=True)
 
 
-    def updateQuery(self, obj):
+    def update_query(self, obj):
+        """
+        updating default query to view all entries
+        :param obj:Textwidget
+        :return:
+        """
         obj.delete('1.0', END)
-        allEntries=entry_db.all()
+        allEntries = entry_db.all()
         for entry in allEntries:
             obj.insert(INSERT, entry)
             obj.insert(INSERT, "\n")
 
-    def searchKeyWord(self, word, obj):
+    def search_date(self, amt, obj):
+        """
+        does not work yet!
+        :param searchWordWord:
+        :param obj:
+        :return:
+        """
+        obj.delete("1.0", END)
+        User = Query()
+        results= entry_db.search(User.Date.search(amt))
+        for result in results:
+            obj.insert(INSERT, result)
+            obj.insert(INSERT, "\n")
+
+    def search_key_word(self, word, obj):
         """
         does not work yet!!
         :param word:
@@ -99,6 +123,30 @@ class Window(Frame):
         resultIndex= obj.search(word, 1.0)
         print(resultIndex)
 
+    def get_latest_entries(self, amount, obj):
+        """
+        To show the latest entries, as many as the user requests
+        :return:
+        returns the latest x amount of entries
+        """
+        obj.delete("1.0", END)
+        def convert_to_int(amount):
+            if amount == '':
+                return 0
+            else:
+                return int(amount)
+        searchAmt = convert_to_int(amount)
+        db_len = len(entry_db)
+        if searchAmt == 1:
+            latestEntry= entry_db.get(doc_id = db_len)
+            obj.insert(INSERT, latestEntry)
+        elif searchAmt > 1:
+            while (db_len - searchAmt) != db_len:
+                doc_pos = db_len - searchAmt
+                latestEntry= entry_db.get(doc_id=doc_pos)
+                obj.insert(INSERT, latestEntry)
+                obj.insert(INSERT, "\n")
+                searchAmt -= 1
 
     def create_entry(self, input_content):
         """
@@ -158,7 +206,7 @@ if __name__ == "__main__":
     """
     root = Tk()
 
-    root.geometry("500x700")
+    root.geometry("500x800")
     root.iconbitmap("favicon.ico")
     app = Window(root)
 
