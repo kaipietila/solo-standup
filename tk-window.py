@@ -1,23 +1,25 @@
 from tkinter import *
 import tkinter.scrolledtext as tkst
+from tkinter import ttk
 import webbrowser
 from standups import *
 import datetime
 from tinydb import TinyDB, Query
 from PIL import Image, ImageTk
-import re
+
 """
 A GUI for the standup app.
 """
 github_link = "https://github.com/kaipietila/solo-standup"
 entry_db = TinyDB('entry_db.json')
-LABEL_FONT= ("Verdana", 10)
-ENTRY_FONT= ("Verdana", 8)
+LABEL_FONT = ("Verdana", 10)
+ENTRY_FONT = ("Verdana", 8)
+HEADER_FONT = ("Sans Serif", 16, 'bold')
 LOGO_IMAGE = "logo.png"
 
 class Window(Frame):
 
-    def __init__(self, master = None):
+    def __init__(self, master=None):
         Frame.__init__(self, master, height= 300, background="white")
         self.master = master
         self.init_window()
@@ -31,7 +33,7 @@ class Window(Frame):
         self.pack(fill=BOTH, expand=1)
         self.master.config(background="white")
 
-        quitButton = Button(self, text="I'm Done!", command= self.client_exit)
+        quitButton = ttk.Button(self, text="I'm Done!", command= self.client_exit)
         quitButton.place(x=400, y=10)
 
         menu = Menu(self.master)
@@ -53,7 +55,10 @@ class Window(Frame):
         inputText = Text(self.master, height=3, width=68, font=ENTRY_FONT)
         inputText.place(x=10, y=70)
 
-        entryButton = Button(self, text="Save Entry", command=lambda: [self.create_entry(inputText.get(1.0, 'end -1c')),
+        header = Label(self.master, text="The Raccoon Says Standup!", font=HEADER_FONT, bg="white")
+        header.place(x=10, y=5)
+
+        entryButton = ttk.Button(self, text="Save Entry", command=lambda: [self.create_entry(inputText.get(1.0, 'end -1c')),
                                                                        self.notify("Saved!")])
         entryButton.place(x=10, y=130)
 
@@ -66,20 +71,20 @@ class Window(Frame):
         labelInputText = Label(self.master, text="What are you going to code today?", font=LABEL_FONT, bg="white")
         labelInputText.place(x=10, y=40)
 
-        queryButton = Button(self.master, text="Update", command=lambda :self.update_query(entryTextBox))
+        queryButton = ttk.Button(self.master, text="Show All", command=lambda :self.update_query(entryTextBox))
         queryButton.pack()
 
-        searchWord = Entry(self.master)
+        searchWord = ttk.Entry(self.master)
         searchWord.pack()
 
-        searchButton = Button(self.master, text="Search text", command= lambda : self.search_key_word(searchWord.get(),
+        searchButton = ttk.Button(self.master, text="Search text", command= lambda : self.search_key_word(searchWord.get(),
                                                                                                entryTextBox))
         searchButton.pack()
-        searchDateButton = Button(self.master, text="Search date", command= lambda :self.search_date(searchWord.get(),
+        searchDateButton = ttk.Button(self.master, text="Search date", command= lambda :self.search_date(searchWord.get(),
                                                                                                       entryTextBox))
         searchDateButton.pack()
 
-        searchLatestButton = Button(self.master, text="Search latest", command=lambda: self.get_latest_entries(searchWord.get(),
+        searchLatestButton = ttk.Button(self.master, text="Search latest", command=lambda: self.get_latest_entries(searchWord.get(),
                                                                                                     entryTextBox))
         searchLatestButton.pack()
 
@@ -108,7 +113,7 @@ class Window(Frame):
         """
         obj.delete("1.0", END)
         User = Query()
-        results= entry_db.search(User.Date.search(amt))
+        results = entry_db.search(User.Date==amt)
         for result in results:
             obj.insert(INSERT, result)
             obj.insert(INSERT, "\n")
@@ -120,8 +125,18 @@ class Window(Frame):
         :param obj:
         :return:
         """
-        resultIndex= obj.search(word, 1.0)
-        print(resultIndex)
+        obj.delete("1.0", END)
+        self.update_query(obj)
+        resultIndex= obj.search(word, 1.0, stopindex=END)
+        while resultIndex:
+            length = len(word)
+            row, col = resultIndex.split('.')
+            end = int(col) + length
+            end = row + '.' + str(end)
+            obj.tag_add('highlight', resultIndex, end)
+            start = end
+            resultIndex = obj.search(word, start, stopindex=END)
+        obj.tag_config('highlight', background='white', foreground='red')
 
     def get_latest_entries(self, amount, obj):
         """
@@ -153,8 +168,9 @@ class Window(Frame):
         Get the text from the text widget and insert it to the tinydb database
         """
         TODAYS_DATE = datetime.datetime.today()
-        db_date = TODAYS_DATE.strftime('%d %b %Y %H:%M')
-        entry_db.insert({'Date': db_date, 'Entry': input_content})
+        db_date = TODAYS_DATE.strftime('%d.%m.%Y')
+        db_time = TODAYS_DATE.strftime("%H:%M")
+        entry_db.insert({'Date': db_date, 'Time': db_time, 'Entry': input_content})
 
     def notify(self, msg):
         """
