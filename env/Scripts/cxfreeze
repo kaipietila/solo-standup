@@ -1,0 +1,6 @@
+#!c:\users\kai_p\onedrive\documents\github\solo-standup\env\scripts\python.exe
+
+from cx_Freeze import main
+
+main()
+

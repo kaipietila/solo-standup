@@ -5,6 +5,7 @@ import webbrowser
 import datetime
 from tinydb import TinyDB, Query
 from PIL import Image, ImageTk
+import os
 
 """
 A GUI for the standup app.
@@ -14,7 +15,7 @@ ENTRY_DB = TinyDB('entry_db.json')
 LABEL_FONT = ("Verdana", 10)
 ENTRY_FONT = ("Verdana", 8)
 HEADER_FONT = ("Sans Serif", 16, 'bold')
-LOGO_IMAGE = "logo.png"
+LOGO_IMAGE = r"C:\Users\kai_p\OneDrive\Documents\GitHub\solo-standup\logo.png"
 
 
 class Window(Frame):
@@ -65,7 +66,7 @@ class Window(Frame):
             input_text.get(1.0, 'end -1c')), self.notify("Saved!")])
         entry_button.place(x=10, y=130)
 
-        logo_image = Image.open("logo.png")
+        logo_image = Image.open(LOGO_IMAGE)
         logo_photo = ImageTk.PhotoImage(logo_image)
         img_label = Label(image=logo_photo, borderwidth=0)
         img_label.image = logo_photo
@@ -240,6 +241,6 @@ if __name__ == "__main__":
     """
     ROOT = Tk()
     ROOT.geometry("500x800")
-    ROOT.iconbitmap("favicon.ico")
+    ROOT.wm_iconbitmap(r"C:\Users\kai_p\OneDrive\Documents\GitHub\solo-standup\favicon.ico")
     APP = Window(ROOT)
     ROOT.mainloop()
